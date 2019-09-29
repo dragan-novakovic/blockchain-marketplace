@@ -1,3 +1,6 @@
-# hello-blockchain
+# Blockchain - Marketplace
 
-### trying blockchain with js
+### Buit with:
+* React.js
+* Web3.js
+* Solidity
