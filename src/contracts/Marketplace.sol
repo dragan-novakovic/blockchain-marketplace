@@ -33,11 +33,10 @@ contract Marketplace {
         name = "Dapp University Marketplace";
     }
 
-    function createProduct(string memory _name, uint _price) public {
-        // Require a valid name
-        require(bytes(_name).length > 0);
-        // Require a valid price
-        require(_price > 0);
+    modifier validName(string memory _name) { require(bytes(_name).length > 0); _; }
+    modifier validPrice(uint _price) { require(_price > 0); _; }
+
+    function createProduct(string memory _name, uint _price) validName(_name) validPrice(_price) public {
         // Increment product count
         productCount ++;
         // Create the product
