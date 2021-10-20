@@ -26,27 +26,32 @@ class App extends Component {
   }
 
   async loadBlockchainData() {
-    const web3 = window.web3
-    // Load account
-    const accounts = await web3.eth.getAccounts()
-    this.setState({ account: accounts[0] })
-    const networkId = await web3.eth.net.getId()
-    const networkData = Marketplace.networks[networkId]
-    if(networkData) {
-      const marketplace = web3.eth.Contract(Marketplace.abi, networkData.address)
-      this.setState({ marketplace })
-      const productCount = await marketplace.methods.productCount().call()
-      this.setState({ productCount })
-      // Load products
-      for (var i = 1; i <= productCount; i++) {
-        const product = await marketplace.methods.products(i).call()
-        this.setState({
-          products: [...this.state.products, product]
-        })
+    try {
+      const web3 = window.web3
+      // Load account
+      const accounts = await web3.eth.getAccounts()
+      this.setState({ account: accounts[0] })
+      const networkId = await web3.eth.net.getId()
+      const networkData = Marketplace.networks[networkId]
+      if(networkData) {
+        const marketplace = web3.eth.Contract(Marketplace.abi, networkData.address)
+        this.setState({ marketplace })
+        const productCount = await marketplace.methods.productCount().call()
+        this.setState({ productCount })
+        // Load products
+        for (var i = 1; i <= productCount; i++) {
+          const product = await marketplace.methods.products(i).call()
+          this.setState({
+            products: [...this.state.products, product]
+          })
+        }
+        this.setState({ loading: false})
+      } else {
+        window.alert('Marketplace contract not deployed to detected network.')
       }
-      this.setState({ loading: false})
-    } else {
-      window.alert('Marketplace contract not deployed to detected network.')
+    } catch (error) {
+      window.alert('There was problem with loading blockchain data, checkout console for more details')
+      console.log(error)
     }
   }
 
